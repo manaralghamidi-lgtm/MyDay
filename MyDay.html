@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ar">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>منظم المهام اليومي </title>
+        <meta name="viewport" content="width=device-width , initial-scale=1.0"/>
+        <style>
+            *{
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            }
+            body{
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: radial-gradient(circle at top ,#4f46e5 ,#020617);
+                color: #0f172a;
+            }
+
+            .app{
+                width: 100%;
+                max-width: 420px;
+                background: #f9fafb;
+                border-radius: 18px;
+                padding: 20px 22px 18px;
+                box-shadow: 0 18px 45px rgba(15, 23, 42, 0.45) 
+                0 0 0 1px rgba(148, 163, 184, 0.35);
+
+            }
+
+            header{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 18px;
+            }
+            
+            .brand{
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .logo-img{
+                width: 34px;
+                height: 34px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+
+            .logo-text{
+                font-size: 18px;
+            font-weight: 700;
+            }
+
+            header select{
+                padding: 6px 10px;
+                border-radius: 999px;
+                border: 1px solid #cbd5f5 ;
+                background: #eef2ff;
+                font-size: 13px;
+                cursor: pointer;
+            }
+            main{
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+            }
+
+            #taskForm{
+                display: flex;
+                gap: 8px;
+            }
+
+            #taskInput{
+                flex: 1;
+                padding: 10px 12px;
+                border-radius: 999px;
+                border: 1px solid#e2e8f0;
+                font-size: 14px;
+                background: #ffffff;
+                transition: border 0.2s, box-shadow 0.2s;
+            }
+
+            #taskInput:focus {
+                outline: none;
+                border-color: #4f46e5;
+                box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.25);
+            }
+
+            #addBtn {
+                padding: 10px 16px;
+                border-radius: 999px;
+                border: none;
+                background: linear-gradient(135deg , #4f46e5 , #6366f1);
+                color: #f9fafb;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                box-shadow: 0 10px 20px rgba(79, 70, 229, 0.45);
+                transition: transform 0.1s , box-shadow 0.1s , opacity 0.2s;
+            }
+
+            #addBtn:active {
+                transform: translateY(1px);
+                box-shadow: 0 4px 12px rgba(79, 70, 229, 0.45);
+            }
+
+            #addBtn:disabled {
+                opacity: 0.4;
+                cursor: default;
+                box-shadow: none;
+            }
+
+            #taskList{
+                list-style: none;
+                max-height: 330px;
+                overflow-y: auto;
+                padding-right: 2px;
+            }
+            .task{
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 9px 10px;
+                margin-bottom: 6px;
+                border-radius: 10px;
+                background: #ffffff;
+                border: solid #e5e7eb;
+                transition: background 0.2s, transform 0.1s , box-shadow 0.1s ;
+            }
+
+            
+.task:hover {
+background: #eef2ff;
+box-shadow: 0 4px 10px rgba(148, 163, 184, 0.35);
+transform: translateY(-1px);
+}
+
+.task input[type="checkbox"] {
+width: 16px;
+height: 16px;
+cursor: pointer;
+}
+
+.task span {
+flex: 1;
+font-size: 14px;
+}
+
+.task.completed span {
+text-decoration: line-through;
+color: #9ca3af;
+}
+
+.delete-btn {
+border: none;
+background: transparent;
+color: #ef4444;
+cursor: pointer;
+font-size: 16px;
+padding: 2px 4px;
+}
+
+.actions {
+display: flex;
+justify-content: space-between;
+margin-top: 4px;
+gap: 8px;
+}
+
+.actions button {
+flex: 1;
+border-radius: 999px;
+border: none;
+padding: 8px 10px;
+font-size: 13px;
+cursor: pointer;
+background: #e5e7eb;
+color: #111827;
+transition: background 0.2s, color 0.2s;
+}
+
+#clearCompleted {
+background: #10b981;
+color: #ecfdf5;
+}
+
+#clearCompleted:hover {
+background: #059669;
+}
+
+#clearAll:hover {
+background: #111827;
+color: #f9fafb;
+}
+
+@media (max-width: 480px) {
+body {
+padding: 16px;
+align-items: flex-start;
+}
+
+.app {
+margin-top: 12px;
+}
+}
+</style>
+</head>
+<body dir="rtl">
+<div class="app">
+<header>
+<div class="brand">
+<img src="Logom.jpeg" alt="Logo" class="logo-img" />
+<span class="logo-text">MyDay</span>
+</div>
+
+<select id="languageSelect">
+<option value="ar">العربية</option>
+<option value="en">English</option>
+<option value="fr">Français</option>
+</select>
+</header>
+
+<main>
+<form id="taskForm">
+<input
+type="text"
+id="taskInput"
+placeholder="أضف مهمة جديدة"
+/>
+<button type="submit" id="addBtn" disabled>إضافة</button>
+</form>
+
+<ul id="taskList"></ul>
+
+<div class="actions">
+<button id="clearCompleted">حذف المهام المنجزة</button>
+<button id="clearAll">حذف كل المهام</button>
+</div>
+</main>
+</div>
+
+<script>
+const translations = {
+ar: {
+title: "مهامي اليوم",
+placeholder: "أضف مهمة جديدة",
+add: "إضافة",
+clearCompleted: "حذف المهام المنجزة",
+clearAll: "حذف كل المهام",
+confirmClearAll: "هل تريد حذف كل المهام؟",
+},
+en: {
+title: "My Day Tasks",
+placeholder: "Add a new task",
+add: "Add",
+clearCompleted: "Clear completed",
+clearAll: "Clear all",
+confirmClearAll: "Do you want to delete all tasks?",
+},
+fr: {
+title: "Tâches du jour",
+placeholder: "Ajouter une nouvelle tâche",
+add: "Ajouter",
+clearCompleted: "Supprimer les tâches terminées",
+clearAll: "Tout supprimer",
+confirmClearAll: "Voulez-vous supprimer toutes les tâches ?",
+},
+};
+
+const languageSelect = document.getElementById("languageSelect");
+const taskInput = document.getElementById("taskInput");
+const addBtn = document.getElementById("addBtn");
+const clearCompletedBtn = document.getElementById("clearCompleted");
+const clearAllBtn = document.getElementById("clearAll");
+const taskForm = document.getElementById("taskForm");
+const taskList = document.getElementById("taskList");
+
+let tasks = [];
+let currentLang = "ar";
+
+window.addEventListener("DOMContentLoaded", () => {
+const savedTasks = localStorage.getItem("dailyTasks");
+const savedLang = localStorage.getItem("lang");
+
+if (savedTasks) {
+tasks = JSON.parse(savedTasks);
+}
+if (savedLang && translations[savedLang]) {
+currentLang = savedLang;
+languageSelect.value = savedLang;
+document.body.dir = currentLang === "ar" ? "rtl" : "ltr";
+}
+
+applyLanguage(currentLang);
+renderTasks();
+});
+
+languageSelect.addEventListener("change", (e) => {
+currentLang = e.target.value;
+localStorage.setItem("lang", currentLang);
+applyLanguage(currentLang);
+document.body.dir = currentLang === "ar" ? "rtl" : "ltr";
+});
+
+function applyLanguage(lang) {
+const t = translations[lang];
+taskInput.placeholder = t.placeholder;
+addBtn.textContent = t.add;
+clearCompletedBtn.textContent = t.clearCompleted;
+clearAllBtn.textContent = t.clearAll;
+}
+
+function saveTasks() {
+localStorage.setItem("dailyTasks", JSON.stringify(tasks));
+}
+
+function renderTasks() {
+taskList.innerHTML = "";
+
+tasks.forEach((task) => {
+const li = document.createElement("li");
+li.className = "task" + (task.completed ? " completed" : "");
+li.dataset.id = task.id;
+
+const checkbox = document.createElement("input");
+checkbox.type = "checkbox";
+checkbox.checked = task.completed;
+
+const span = document.createElement("span");
+span.textContent = task.text;
+
+const delBtn = document.createElement("button");
+delBtn.className = "delete-btn";
+delBtn.innerHTML = "✕";
+
+checkbox.addEventListener("change", () => toggleTask(task.id));
+delBtn.addEventListener("click", () => deleteTask(task.id));
+
+li.appendChild(checkbox);
+li.appendChild(span);
+li.appendChild(delBtn);
+taskList.appendChild(li);
+});
+
+toggleAddButtonState();
+}
+
+taskForm.addEventListener("submit", (e) => {
+e.preventDefault();
+const text = taskInput.value.trim();
+if (!text) return;
+
+const newTask = {
+id: Date.now().toString(),
+text,
+completed: false,
+};
+
+tasks.unshift(newTask);
+taskInput.value = "";
+saveTasks();
+renderTasks();
+});
+
+taskInput.addEventListener("input", toggleAddButtonState);
+
+function toggleAddButtonState() {
+addBtn.disabled = taskInput.value.trim().length === 0;
+}
+
+function toggleTask(id) {
+tasks = tasks.map((task) =>
+task.id === id ? { ...task, completed: !task.completed } : task
+);
+saveTasks();
+renderTasks();
+}
+
+function deleteTask(id) {
+tasks = tasks.filter((task) => task.id !== id);
+saveTasks();
+renderTasks();
+}
+
+clearCompletedBtn.addEventListener("click", () => {
+tasks = tasks.filter((task) => !task.completed);
+saveTasks();
+renderTasks();
+});
+
+clearAllBtn.addEventListener("click", () => {
+const msg = translations[currentLang].confirmClearAll;
+if (confirm(msg)) {
+tasks = [];
+saveTasks();
+renderTasks();
+}
+});
+</script>
+</body>
+</html>
